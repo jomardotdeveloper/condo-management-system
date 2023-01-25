@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('unit_towers')->nullable();
             $table->integer('reading_day');
-            $table->integer('due_date')->nullable();
+            $table->integer('due_date');
             $table->timestamps();
         });
     }
