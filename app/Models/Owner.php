@@ -10,6 +10,7 @@ class Owner extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'image_src',
         'title', 
         'move_in_date',
@@ -55,6 +56,11 @@ class Owner extends Model
         'other_clearance',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function unit()
     {
         return $this->belongsTo(Unit::class);
@@ -74,6 +80,110 @@ class Owner extends Model
             return $this->first_name . ' ' . $this->middle_name . ' ' . $this->last_name;
         }
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getSubmittedRequirementsAttribute()
+    {
+        $requirements = [];
+
+        if($this->pow_condo){
+            array_push($requirements, "Condominium Certificate of Title");
+        }
+
+        if($this->pow_deeds){
+            array_push($requirements, "Deed/s of Absolute Sale");
+        }
+
+        if($this->spa_unit_owner){
+            array_push($requirements, "SPA from Unit Owner");
+        }
+
+        if($this->spa_spa){
+            array_push($requirements, "2 Government ID of the SPA");
+        }
+
+        if($this->spa_all){
+            array_push($requirements, "2 Government ID of All Occupants");
+        }
+
+        if($this->other_health){
+            array_push($requirements, "Health Certificate of All Occupants");
+        }
+
+        if($this->other_utility){
+            array_push($requirements, "Utility Deposit for Owner");
+        }
+
+        if($this->other_cleared){
+            array_push($requirements, "Cleared Accounts");
+        }
+
+        if($this->other_paid){
+            array_push($requirements, "Paid Utility Bills (current)");
+        }
+
+        if($this->other_clearance){
+            array_push($requirements, "Clearance From Security");
+        }
+
+
+        return $requirements;
+    }
+
+
+    public function getRemainingRequirementsAttribute()
+    {
+        $requirements = [];
+
+        if(!$this->pow_condo){
+            array_push($requirements, "Condominium Certificate of Title");
+        }
+
+        if(!$this->pow_deeds){
+            array_push($requirements, "Deed/s of Absolute Sale");
+        }
+
+        if(!$this->spa_unit_owner){
+            array_push($requirements, "SPA from Unit Owner");
+        }
+
+        if(!$this->spa_spa){
+            array_push($requirements, "2 Government ID of the SPA");
+        }
+
+        if(!$this->spa_all){
+            array_push($requirements, "2 Government ID of All Occupants");
+        }
+
+        if(!$this->other_health){
+            array_push($requirements, "Health Certificate of All Occupants");
+        }
+
+        if(!$this->other_utility){
+            array_push($requirements, "Utility Deposit for Owner");
+        }
+
+        if(!$this->other_cleared){
+            array_push($requirements, "Cleared Accounts");
+        }
+
+        if(!$this->other_paid){
+            array_push($requirements, "Paid Utility Bills (current)");
+        }
+
+        if(!$this->other_clearance){
+            array_push($requirements, "Clearance From Security");
+        }
+
+
+        return $requirements;
+    }
+
+    public function getHasPortalAttribute(){
+        if($this->user)
+            return true;
+        else
+            return false;
     }
 
 }

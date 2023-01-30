@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('owners', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('image_src')->nullable();
             $table->enum('title', config('enum.owner_title'));
             $table->date('move_in_date');

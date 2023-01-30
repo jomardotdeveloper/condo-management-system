@@ -6,154 +6,463 @@
             <h4 class="nk-block-title">New unit owner</h4>
         </div>
     </div>
+    @if($errors->any())
+        <div class="alert alert-danger alert-icon">
+            <em class="icon ni ni-cross-circle"></em>
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="card card-bordered card-preview mt-2">
         <div class="card-inner">
             <div class="preview-block">
-                <span class="preview-title-lg overline-title">Unit owner form</span>
+                <span class="preview-title-lg overline-title">Residence Information Sheet</span>
+                <form method="POST" action="{{ route('owners.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row gy-4">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="title">Title</label>
+                                <div class="form-control-wrap ">
+                                    <div class="form-control-select">
+                                        <select class="form-control" name="title" id="title" required>
+                                            @foreach (config('enum.owner_title') as $title)
+                                                <option value="{{ $title }}">
+                                                    {{ ucfirst($title) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="move_in_date">Move In</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" class="form-control" id="move_in_date" name="move_in_date" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="move_out_date">Move Out(Optional)</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" class="form-control" id="move_out_date" name="move_out_date" placeholder="Enter your details" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gy-4 mt-1">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="first_name">First Name</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="middle_name">Middle Name</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="middle_name" name="middle_name" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="last_name">Last Name</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" for="suffix_name">Suffix Name(Optional)</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="suffix_name" name="suffix_name" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="gender">Gender</label>
+                                <div class="form-control-wrap ">
+                                    <div class="form-control-select">
+                                        <select class="form-control" id="gender" name="gender" required>
+                                            @foreach (config('enum.owner_gender') as $gender)
+                                                <option value="{{ $gender }}">
+                                                    {{ ucfirst($gender) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="birthdate">Birthday(Optional)</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="nationality">Nationality</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="nationality" name="nationality" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="contact_no">Contact Number</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="occupation">Occupation (Optional)</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="occupation" name="occupation" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="preview-hr">
+                    <div class="row gy-4">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="utility_bond">Utility Bond</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="utility_bond" name="utility_bond" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="date_of_ar">Date of AR (Optional)</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" class="form-control" id="date_of_ar" name="date_of_ar" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="electric_reading">Electric Reading</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="electric_reading" name="electric_reading" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="water_reading">Water Reading</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="water_reading" name="water_reading" placeholder="Enter your details" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="or_number">OR Number (Optional)</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" class="form-control" id="or_number" name="or_number" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="remarks">Remarks </label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-right">
+                                        <em class="icon ni ni-user"></em>
+                                    </div>
+                                    <input type="text" class="form-control" id="remarks" name="remarks" placeholder="Enter your details">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="preview-hr">
+                    <div class="row gy-4">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="unit_id">Unit No.</label>
+                                <div class="form-control-wrap ">
+                                    <div class="form-control-select">
+                                        <select class="form-control" id="unit_id" name="unit_id" required>
+                                            @foreach ($units as $unit)
+                                                <option value="{{ $unit->id }}">
+                                                    {{ $unit->unit_number }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="residency_status">Residency Status</label>
+                                <div class="form-control-wrap ">
+                                    <div class="form-control-select">
+                                        <select class="form-control" id="residency_status" name="residency_status" required>
+                                            @foreach (config('enum.owner_residency_status') as $res)
+                                            <option value="{{ $res }}">{{ $res }}</option>    
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label" for="is_occupant">Is Occupant</label>
+                                <div class="form-control-wrap ">
+                                    <div class="form-control-select">
+                                        <select class="form-control" id="is_occupant" name="is_occupant" required>
+                                            <option value="YES">YES</option>
+                                            <option value="NO">NO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="preview-hr">
                 <div class="row gy-4">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="form-label" for="default-01">Input text Default</label>
-                            <div class="form-control-wrap">
-                                <input type="text" class="form-control" id="default-01" placeholder="Input placeholder">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="form-label" for="default-05">Input with Text</label>
-                            <div class="form-control-wrap">
-                                <div class="form-text-hint">
-                                    <span class="overline-title">Usd</span>
-                                </div>
-                                <input type="text" class="form-control" id="default-05" placeholder="Input placeholder">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="form-label" for="default-03">Input with Icon Left</label>
-                            <div class="form-control-wrap">
-                                <div class="form-icon form-icon-left">
-                                    <em class="icon ni ni-user"></em>
-                                </div>
-                                <input type="text" class="form-control" id="default-03" placeholder="Input placeholder">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="default-04">Input with Icon Right</label>
+                            <label class="form-label" for="spa_name">SPA </label>
                             <div class="form-control-wrap">
                                 <div class="form-icon form-icon-right">
-                                    <em class="icon ni ni-mail"></em>
+                                    <em class="icon ni ni-user"></em>
                                 </div>
-                                <input type="text" class="form-control" id="default-04" placeholder="Input placeholder">
+                                <input type="text" class="form-control" id="spa_name" name="spa_name" placeholder="Enter your details" required>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="form-label" for="default-textarea">Textarea</label>
+                            <label class="form-label" for="spa_contact_no">SPA Contact </label>
                             <div class="form-control-wrap">
-                                <textarea class="form-control no-resize" id="default-textarea">Large text area content</textarea>
+                                <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-user"></em>
+                                </div>
+                                <input type="text" class="form-control" id="spa_contact_no" name="spa_contact_no" placeholder="Enter your details" required>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="form-label" for="default-06">Default File Upload</label>
+                            <label class="form-label" for="household_name">Household </label>
+                            <div class="form-control-wrap">
+                                <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-user"></em>
+                                </div>
+                                <input type="text" class="form-control" id="household_name" name="household_name" placeholder="Enter your details" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label" for="household_contact_no">Household Contact </label>
+                            <div class="form-control-wrap">
+                                <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-user"></em>
+                                </div>
+                                <input type="text" class="form-control" id="household_contact_no" name="household_contact_no" placeholder="Enter your details" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label" for="broker_name">Broker </label>
+                            <div class="form-control-wrap">
+                                <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-user"></em>
+                                </div>
+                                <input type="text" class="form-control" id="broker_name" name="broker_name" placeholder="Enter your details" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label" for="broker_contact_no">Broker Contact </label>
+                            <div class="form-control-wrap">
+                                <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-user"></em>
+                                </div>
+                                <input type="text" class="form-control" id="broker_contact_no" name="broker_contact_no" placeholder="Enter your details" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="preview-hr">
+                <div class="row gy-4">
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <label class="form-label" for="address">Address</label>
+                            <div class="form-control-wrap">
+                                <textarea class="form-control" id="address" name="address" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label class="form-label" for="default-06">Image</label>
                             <div class="form-control-wrap">
                                 <div class="form-file">
-                                    <input type="file" multiple class="form-file-input" id="customFile">
+                                    <input type="file" multiple class="form-file-input" id="customFile" name="image_src" required>
                                     <label class="form-file-label" for="customFile">Choose file</label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="default-06">Default Select</label>
-                            <div class="form-control-wrap ">
-                                <div class="form-control-select">
-                                    <select class="form-control" id="default-06">
-                                        <option value="default_option">Default Option</option>
-                                        <option value="option_select_name">Option select name</option>
-                                        <option value="option_select_name">Option select name</option>
-                                    </select>
+                            <label class="form-label" for="default-06">Proof of Identity</label>
+                            <div class="form-control-wrap">
+                                <div class="form-file">
+                                    <input type="file" multiple class="form-file-input" id="customFile" name="proof_of_identity_src" required>
+                                    <label class="form-file-label" for="customFile">Choose file</label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="form-label" for="default-07">Default Select Multiple</label>
+                            <label class="form-label" for="default-06">Proof of Ownership</label>
                             <div class="form-control-wrap">
-                                <div class="form-control-select-multiple">
-                                    <select class="form-select" id="default-07" multiple aria-label="multiple select example">
-                                        <option value="option_select0">Default Option</option>
-                                        <option value="option_select1">Option select name</option>
-                                        <option value="option_select2">Option select name</option>
-                                        <option value="option_select2">Option select name</option>
-                                        <option value="option_select2">Option select name</option>
-                                    </select>
+                                <div class="form-file">
+                                    <input type="file" multiple class="form-file-input" id="customFile" name="proof_of_ownership_src" required>
+                                    <label class="form-file-label" for="customFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="default-06">Upload Signature</label>
+                            <div class="form-control-wrap">
+                                <div class="form-file">
+                                    <input type="file" multiple class="form-file-input" id="customFile" name="signature_src" required>
+                                    <label class="form-file-label" for="customFile">Choose file</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <hr class="preview-hr">
-                <span class="preview-title-lg overline-title">State Preview</span>
                 <div class="row gy-4">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="form-label" for="default-1-01">Focus State</label>
-                            <input type="text" class="form-control focus" id="default-1-01" placeholder="Input placeholder">
+                    <div class="col-sm-4">
+                        <span class="preview-title-lg overline-title">Proof of ownership:</span>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="pow_condo" name="pow_condo">
+                            <label class="custom-control-label" for="pow_condo">Condominium Certificate of Title</label>
+                        </div>
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="pow_deeds" name="pow_deeds">
+                            <label class="custom-control-label" for="pow_deeds" >Deed/s of Absolute Sale</label>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="form-label" for="default-1-02">Filled State</label>
-                            <input type="text" class="form-control" id="default-1-02" value="Abu Bin Ishtiyak">
+                    <div class="col-sm-4">
+                        <span class="preview-title-lg overline-title">SPA & Gov't IDs</span>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="spa_unit_owner" name="spa_unit_owner">
+                            <label class="custom-control-label" for="spa_unit_owner">SPA from Unit Owner</label>
+                        </div>
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="spa_spa" name="spa_spa">
+                            <label class="custom-control-label" for="spa_spa">2 Government ID of the SPA</label>
+                        </div>
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="spa_all" name="spa_all">
+                            <label class="custom-control-label" for="spa_all">2 Government ID of All Occupants</label>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="form-label" for="default-1-04">Error State</label>
-                            <input type="text" class="form-control error" id="default-1-04" placeholder="Input placeholder">
+                    <div class="col-sm-4">
+                        <span class="preview-title-lg overline-title">Other Requirements</span>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="other_health" name="other_health">
+                            <label class="custom-control-label" for="other_health">Health Certificate of All Occupants</label>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="form-label" for="default-1-03">Disabled State</label>
-                            <input type="text" class="form-control" id="default-1-03" disabled value="info@softnio.com">
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="other_utility" name="other_utility">
+                            <label class="custom-control-label" for="other_utility">Utility Deposit for Owner</label>
                         </div>
-                    </div>
-                </div>
-                <hr class="preview-hr">
-                <span class="preview-title-lg overline-title">Size Preview </span>
-                <div class="row gy-4 align-center">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <div class="form-control-wrap">
-                                <input type="text" class="form-control form-control-lg" placeholder="Input Large">
-                            </div>
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="other_cleared" name="other_cleared">
+                            <label class="custom-control-label" for="other_cleared">Cleared Accounts</label>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <div class="form-control-wrap">
-                                <input type="text" class="form-control" placeholder="Input Regular">
-                            </div>
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="other_paid" name="other_paid">
+                            <label class="custom-control-label" for="other_paid">Paid Utility Bills (current)</label>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <div class="form-control-wrap">
-                                <input type="text" class="form-control form-control-sm" placeholder="Input Small">
-                            </div>
+                        <div class="mt-2"></div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="other_clearance" name="other_clearance">
+                            <label class="custom-control-label" for="other_clearance">Clearance From Security</label>
                         </div>
+                        
                     </div>
-                    <div class="col-12">
-                        <p class="text-soft">Use <code>.form-control-lg</code> or <code>.form-control-sm</code> with <code>.form-control</code> for large or small input box.</p>
+                    <div class="col-sm-12">
+                        <input type="submit" value="Submit" class="btn btn-primary" />
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
