@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -13,19 +14,9 @@ class AccountController extends Controller
      */
     public function index()
     {
-        //
+        return view('backend.accounts.index',['accounts' => Account::all()]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -34,29 +25,8 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        Account::create(['name' => $request->name, 'is_in' => $request->type == 'IN' ? true : false]);
+        return redirect()->route('accounts.index')->with(["success" => "Account has been created."]);
     }
 
     /**
@@ -66,9 +36,10 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Account $account)
     {
-        //
+        $account->update(['name' => $request->name, 'is_in' => $request->type == 'IN' ? true : false]);
+        return redirect()->route('accounts.index')->with(["success" => "Account has been updated."]);
     }
 
     /**
@@ -77,8 +48,9 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Account $account)
     {
-        //
+        $account->delete();
+        return redirect()->route('accounts.index')->with(["success" => "Account has been deleted."]);
     }
 }

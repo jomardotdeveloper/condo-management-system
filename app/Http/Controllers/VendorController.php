@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 
 class VendorController extends Controller
@@ -13,17 +14,9 @@ class VendorController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('backend.vendors.index', [
+            'vendors' => Vendor::all(),
+        ]);
     }
 
     /**
@@ -34,29 +27,14 @@ class VendorController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        Vendor::create([
+            'company_name' => $request->company_name,
+            'company_address' => $request->company_address,
+            'contact_no' => $request->contact_no,
+            'email' => $request->email,
+            'contact_person' => $request->contact_person,
+        ]);
+        return redirect()->route('vendors.index')->with(["success" => "Vendor has been created."]);
     }
 
     /**
@@ -66,9 +44,16 @@ class VendorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Vendor $vendor)
     {
-        //
+        $vendor->update([
+            'company_name' => $request->company_name,
+            'company_address' => $request->company_address,
+            'contact_no' => $request->contact_no,
+            'email' => $request->email,
+            'contact_person' => $request->contact_person,
+        ]);
+        return redirect()->route('vendors.index')->with(["success" => "Vendor has been updated."]);
     }
 
     /**
@@ -77,8 +62,9 @@ class VendorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Vendor $vendor)
     {
-        //
+        $vendor->delete();
+        return redirect()->route('vendors.index')->with(["success" => "Vendor has been deleted."]);
     }
 }

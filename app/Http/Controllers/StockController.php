@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Owner;
+use App\Models\Stock;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
@@ -13,7 +16,9 @@ class StockController extends Controller
      */
     public function index()
     {
-        //
+        return view('backend.stocks.index', [
+            'stocks' => Stock::all(),
+        ]);
     }
 
     /**
@@ -23,7 +28,9 @@ class StockController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.stocks.create', [
+            'vendors' => Vendor::all(),
+        ]);
     }
 
     /**
@@ -34,7 +41,19 @@ class StockController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $stock = Stock::create([
+            'name' => $request->name,
+            'vendor_id' => $request->vendor_id,
+            'location' => $request->location,
+        ]);
+
+        $stock->moves()->create([
+            'is_in' => true,
+            'quantity' => $request->quantity,
+            'remarks' => "Initial Stock",
+        ]);
+
+        return redirect()->route('stocks.index')->with(["success" => "Stock has been created."]);
     }
 
     /**
@@ -43,9 +62,11 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Stock $stock)
     {
-        //
+        return view('backend.stocks.show', [
+            'stock' => $stock,
+        ]);
     }
 
     /**
@@ -54,9 +75,12 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Stock $stock)
     {
-        //
+        return view('backend.stocks.edit', [
+            'stock' => $stock,
+            'vendors' => Vendor::all(),
+        ]);
     }
 
     /**
@@ -66,9 +90,23 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Stock $stock)
     {
-        //
+        $stock->update([
+            'name' => $request->name,
+            'vendor_id' => $request->vendor_id,
+            'location' => $request->location,
+        ]);
+
+        if($request->is_check_adjust == "on"){
+            $stock->moves()->create([
+                'is_in' => $request->move == "IN" ? true : false,
+                'quantity' => $request->quantity,
+                'remarks' => $request->remarks,
+            ]);
+        }
+
+        return redirect()->route('stocks.index')->with(["success" => "Stock has been updated."]);
     }
 
     /**
@@ -77,8 +115,9 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Stock $stock)
     {
-        //
+        $stock->delete();
+        return redirect()->route('stocks.index')->with(["success" => "Stock has been deleted."]);
     }
 }

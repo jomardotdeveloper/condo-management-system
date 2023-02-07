@@ -6,6 +6,7 @@ use App\Models\Owner;
 use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class OwnerController extends Controller
@@ -270,13 +271,18 @@ class OwnerController extends Controller
      * @ SABOG NA
      */
 
-    public function grantAccess(Request $request, $id)
+    public function grantAccess(Request $request, Owner $owner)
     {
-        $owner = Owner::find($id);
-        $owner->update([
-            'is_portal_user' => true
+        $request->validate([
+            "email" => "unique:users|required",
+            "password" => "required|confirmed",
         ]);
-
-        return redirect()->route('owners.index');
+        $user = User::create([
+            "email" => $request->email,
+            "password" => Hash::make($request->password),
+            "is_portal_user" => true
+        ]);
+        $owner->update(["user_id" => $user->id]);
+        return redirect()->route('owners.index')->with(["success" => "Portal access has been granted."]);
     }
 }

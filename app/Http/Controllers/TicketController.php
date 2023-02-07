@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {
@@ -13,18 +15,15 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $tickets = Ticket::all();
+
+        if(auth()->user()->is_portal_user){
+            $tickets = auth()->user()->tickets;
+        }
+
+        return view("backend.tickets.index", compact("tickets"));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -34,29 +33,20 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'attachment_src' => null,
+            'user_id' => auth()->user()->id
+        ];
+        if($request->file("attachment_src")){
+            $path = Storage::putFile("public/images", $request->file("attachment_src"));
+            $path = Storage::url($path);
+            $data["attachment_src"] = $path;
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        Ticket::create($data);
+        return redirect()->route('tickets.index')->with(["success" => "Ticket has been created."]);
     }
 
     /**

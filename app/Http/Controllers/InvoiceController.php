@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Invoice;
+use App\Models\Owner;
+use App\Models\Setting;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -13,7 +18,10 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        return view('backend.invoices.index', [
+            'invoices' => Invoice::all(),
+            'accounts' => Account::where('is_in', true)->get()->all()
+        ]);
     }
 
     /**
@@ -23,7 +31,13 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.invoices.create', [
+            'owners' => Owner::all(),
+            'tenants' => Tenant::all(),
+            'monthly_due' => Setting::where('key', 'monthly_due')->first()->value,
+            'electricity' => Setting::where('key', 'electricity')->first()->value,
+            'water' => Setting::where('key', 'water')->first()->value,
+        ]);
     }
 
     /**
@@ -34,7 +48,38 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $is_unit_owner = str_contains( $request->customer, 'o_');
+        $customer_id = $is_unit_owner ? str_replace('o_', '', $request->customer) : str_replace('t_', '', $request->customer);
+        $user = $is_unit_owner ? Owner::find($customer_id) : Tenant::find($customer_id);
+        $monthly = Setting::where('key', 'monthly_due')->first()->value;
+        $electricity =  Setting::where('key', 'electricity')->first()->value;
+        $water =  Setting::where('key', 'water')->first()->value;
+
+
+
+        $invoice = Invoice::create([
+            'date_deadline' => $request->date_deadline,
+            'customer_id' => $customer_id,
+            'is_unit_owner' => $is_unit_owner,
+            'user_id' => $user ? $user->id : null,
+        ]);
+
+        $invoice->lines()->create([
+            'label' => 'Monthly Due',
+            'amount' => $monthly,
+        ]);
+
+        $invoice->lines()->create([
+            'label' => 'Electricity',
+            'amount' => $electricity,
+        ]);
+
+        $invoice->lines()->create([
+            'label' => 'Water',
+            'amount' => $water,
+        ]);
+
+        return redirect()->route('invoices.index')->with(["success" => "Invoice has been created."]);
     }
 
     /**

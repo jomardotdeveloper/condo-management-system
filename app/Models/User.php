@@ -47,5 +47,30 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class);
     }
 
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class);
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(Owner::class);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function getRoleAttribute(){
+        if($this->employee)
+            return "employee";
+        else if($this->tenant)
+            return "tenant";
+
+        return "owner";
+    }
+
+
     
 }

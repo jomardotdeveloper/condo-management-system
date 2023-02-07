@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Bank;
+use App\Models\Entry;
 use Illuminate\Http\Request;
 
 class CashflowController extends Controller
@@ -13,18 +16,14 @@ class CashflowController extends Controller
      */
     public function index()
     {
-        //
+        return view('backend.entries.index', [
+            'entries' => Entry::all(),
+            'banks' => Bank::all(),
+            'accounts' => Account::all(),
+            'net' => $this->getNet(),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -34,30 +33,15 @@ class CashflowController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Entry::create([
+            'bank_id' => $request->bank_id,
+            'account_id' => $request->account_id,
+            'amount' => $request->amount,
+            'reference' => $request->reference,
+        ]);
+        return redirect()->route('entries.index')->with(["success" => "Entry has been created."]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -66,9 +50,15 @@ class CashflowController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Entry $entry)
     {
-        //
+        $entry->update([
+            'bank_id' => $request->bank_id,
+            'account_id' => $request->account_id,
+            'amount' => $request->amount,
+            'reference' => $request->reference,
+        ]);
+        return redirect()->route('entries.index')->with(["success" => "Entry has been updated."]);
     }
 
     /**
@@ -77,8 +67,23 @@ class CashflowController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Entry $entry)
     {
-        //
+        $entry->delete();
+        return redirect()->route('entries.index')->with(["success" => "Entry has been deleted."]);
+    }
+
+    private function getNet(){
+        $entries = Entry::all();
+        $net = 0;
+
+        foreach ($entries as $entry){
+            if($entry->account->is_in)
+                $net += $entry->amount;
+            else
+                $net -= $entry->amount;
+        }
+
+        return $net;
     }
 }

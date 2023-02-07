@@ -16,9 +16,7 @@
 
 <body class="nk-body bg-lighter npc-default has-sidebar ">
     <div class="nk-app-root">
-        <!-- main @s -->
         <div class="nk-main ">
-            <!-- sidebar @s -->
             <div class="nk-sidebar nk-sidebar-fixed is-light " data-content="sidebarMenu">
                 <div class="nk-sidebar-element nk-sidebar-head">
                     <div class="nk-sidebar-brand">
@@ -36,7 +34,11 @@
                 <div class="nk-sidebar-element">
                     <div class="nk-sidebar-content">
                         <div class="nk-sidebar-menu" data-simplebar>
+                            @if(!auth()->user()->is_portal_user)
                             @include("layouts.menu")
+                            @else
+                            @include("layouts.menu-portal")
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -56,16 +58,39 @@
                             </div>
                             <div class="nk-header-tools">
                                 <ul class="nk-quick-nav">
-                                    @include("layouts.notification")
+                                    {{-- @include("layouts.notification") --}}
                                     <li class="dropdown user-dropdown">
                                         <a href="#" class="dropdown-toggle me-n1" data-bs-toggle="dropdown">
                                             <div class="user-toggle">
                                                 <div class="user-avatar sm">
-                                                    <em class="icon ni ni-user-alt"></em>
+                                                    @if (auth()->user()->role == "employee")
+                                                    <span>{{auth()->user()->employee->first_name[0] . auth()->user()->employee->first_name[1]}}</span>
+                                                    @elseif (auth()->user()->role == "tenant")
+                                                    <img src="{{ auth()->user()->tenant->image_src }}" alt="">
+                                                    @else
+                                                    <img src="{{ auth()->user()->owner->image_src }}" alt="">
+                                                    @endif
+                                                    
                                                 </div>
                                                 <div class="user-info d-none d-xl-block">
-                                                    <div class="user-status user-status-unverified">Unverified</div>
-                                                    <div class="user-name dropdown-indicator">Abu Bin Ishityak</div>
+                                                    <div class="user-status user-status-verified">
+                                                        @if (auth()->user()->role == "employee")
+                                                        Employee
+                                                        @elseif (auth()->user()->role == "tenant")
+                                                        Tenant
+                                                        @else
+                                                        Unit Owner
+                                                        @endif
+                                                    </div>
+                                                    <div class="user-name dropdown-indicator">
+                                                        @if (auth()->user()->role == "employee")
+                                                        {{ auth()->user()->employee->full_name }}
+                                                        @elseif (auth()->user()->role == "tenant")
+                                                        {{ auth()->user()->tenant->full_name }}
+                                                        @else
+                                                        {{ auth()->user()->owner->full_name }}
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
                                         </a>
@@ -73,11 +98,26 @@
                                             <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
                                                 <div class="user-card">
                                                     <div class="user-avatar">
-                                                        <span>AB</span>
+                                                        @if (auth()->user()->role == "employee")
+                                                        <span>{{auth()->user()->employee->first_name[0] . auth()->user()->employee->first_name[1]}}</span>
+                                                        @elseif (auth()->user()->role == "tenant")
+                                                        <img src="{{ auth()->user()->tenant->image_src }}" alt="">
+                                                        @else
+                                                        <img src="{{ auth()->user()->owner->image_src }}" alt="">
+                                                        @endif
+                                                        
                                                     </div>
                                                     <div class="user-info">
-                                                        <span class="lead-text">Abu Bin Ishtiyak</span>
-                                                        <span class="sub-text">info@softnio.com</span>
+                                                        <span class="lead-text">
+                                                        @if (auth()->user()->role == "employee")
+                                                        {{ auth()->user()->employee->full_name }}
+                                                        @elseif (auth()->user()->role == "tenant")
+                                                        {{ auth()->user()->tenant->full_name }}
+                                                        @else
+                                                        {{ auth()->user()->owner->full_name }}
+                                                        @endif
+                                                        </span>
+                                                        <span class="sub-text">{{ auth()->user()->email }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,137 +158,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- footer @e -->
             </div>
-            <!-- wrap @e -->
         </div>
-        <!-- main @e -->
     </div>
-    <!-- app-root @e -->
-    <!-- select region modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="region">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <a href="#" class="close" data-bs-dismiss="modal"><em class="icon ni ni-cross-sm"></em></a>
-                <div class="modal-body modal-body-md">
-                    <h5 class="title mb-4">Select Your Country</h5>
-                    <div class="nk-country-region">
-                        <ul class="country-list text-center gy-2">
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/arg.png" alt="" class="country-flag">
-                                    <span class="country-name">Argentina</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/aus.png" alt="" class="country-flag">
-                                    <span class="country-name">Australia</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/bangladesh.png" alt="" class="country-flag">
-                                    <span class="country-name">Bangladesh</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/canada.png" alt="" class="country-flag">
-                                    <span class="country-name">Canada <small>(English)</small></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/china.png" alt="" class="country-flag">
-                                    <span class="country-name">Centrafricaine</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/china.png" alt="" class="country-flag">
-                                    <span class="country-name">China</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/french.png" alt="" class="country-flag">
-                                    <span class="country-name">France</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/germany.png" alt="" class="country-flag">
-                                    <span class="country-name">Germany</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/iran.png" alt="" class="country-flag">
-                                    <span class="country-name">Iran</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/italy.png" alt="" class="country-flag">
-                                    <span class="country-name">Italy</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/mexico.png" alt="" class="country-flag">
-                                    <span class="country-name">México</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/philipine.png" alt="" class="country-flag">
-                                    <span class="country-name">Philippines</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/portugal.png" alt="" class="country-flag">
-                                    <span class="country-name">Portugal</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/s-africa.png" alt="" class="country-flag">
-                                    <span class="country-name">South Africa</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/spanish.png" alt="" class="country-flag">
-                                    <span class="country-name">Spain</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/switzerland.png" alt="" class="country-flag">
-                                    <span class="country-name">Switzerland</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/uk.png" alt="" class="country-flag">
-                                    <span class="country-name">United Kingdom</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="country-item">
-                                    <img src="./images/flags/english.png" alt="" class="country-flag">
-                                    <span class="country-name">United State</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div><!-- .modal-content -->
-        </div><!-- .modla-dialog -->
-    </div><!-- .modal -->
-    <!-- JavaScript -->
     <script src="{{ asset('assets/js/bundle.js?ver=3.0.0') }}"></script>
     <script src="{{ asset('assets/js/scripts.js?ver=3.0.0') }}"></script>
     @stack('scripts')
